@@ -43,4 +43,21 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    // Jetpack Compose (UI Components)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui.tooling.preview)
+
+    // Lifecycle (ViewModel, LiveData, Runtime)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // Activity Compose (For Jetpack Compose integration)
+    implementation(libs.androidx.activity.compose)
+
+    // Coroutine Support for ViewModel
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Tooling support (For Preview in Android Studio)
+    debugImplementation(libs.androidx.ui.tooling)
 }
