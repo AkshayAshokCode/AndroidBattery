@@ -11,7 +11,7 @@ import com.akshayashokcode.androidbattery.BatteryReceiver
 import kotlinx.coroutines.launch
 
 class BatteryViewModel : ViewModel() {
-    private val batteryInfo = mutableStateOf(BatteryInfo(0f, 0, 0.0, "Unknown"))
+    val batteryInfo = mutableStateOf(BatteryInfo(0f, 0, 0.0, "Unknown"))
 
     fun registerBatteryReceiver(context: Context) {
         viewModelScope.launch {
