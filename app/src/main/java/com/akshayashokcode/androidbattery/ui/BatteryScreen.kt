@@ -57,15 +57,15 @@ fun BatteryInfoUI(batteryInfo: BatteryInfo) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .background(Color.Black),
+                .background(Color.White)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Battery Status: ${batteryInfo.status}",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = Color.Black
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -85,7 +85,7 @@ fun BatteryStatRow(label: String, value: String) {
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, fontSize = 18.sp, color = Color.White)
-        Text(text = value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Cyan)
+        Text(text = label, fontSize = 18.sp, color = Color.Black)
+        Text(text = value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
     }
 }
