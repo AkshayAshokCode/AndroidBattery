@@ -13,6 +13,7 @@ import android.os.BatteryManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.createBitmap
+import androidx.core.graphics.toColorInt
 
 class BatteryReceiver : BroadcastReceiver() {
     @RequiresApi(Build.VERSION_CODES.P)
@@ -59,11 +60,11 @@ fun setSolidColorWallpaperWithEmoji(context: Context, color: Int, emoji: String)
 
 fun getColorAndEmoji(level: Int, isCharging: Boolean): Pair<Int, String> {
     return when (level) {
-        in 0..10 -> Pair(Color.parseColor("#8B0000"), "🪫")       // Dark Red
+        in 0..10 -> Pair("#8B0000".toColorInt(), "🪫")       // Dark Red
         in 11..30 -> Pair(Color.RED, "🪫")
-        in 31..50 -> Pair(Color.parseColor("#FFA500"), "🔌")      // Orange
+        in 31..50 -> Pair("#FFA500".toColorInt(), "🔌")      // Orange
         in 51..70 -> Pair(Color.YELLOW, "⚡")
-        in 71..90 -> Pair(Color.parseColor("#90EE90"), "🔌")      // Light Green
+        in 71..90 -> Pair("#90EE90".toColorInt(), "🔌")      // Light Green
         in 91..100 -> Pair(Color.GREEN, if (isCharging) "⚡✅" else "✅")
         else -> Pair(Color.GRAY, "❓")
     }
