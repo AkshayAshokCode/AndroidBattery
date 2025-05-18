@@ -10,10 +10,10 @@ import android.content.IntentFilter
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 
+private const val CHANNEL_ID = "BatteryWallpaperService"
 class WallpaperService : Service() {
 
     private lateinit var batteryReceiver: BatteryReceiver
-    private val CHANNEL_ID = "BatteryWallpaperService"
 
     override fun onCreate() {
         super.onCreate()
@@ -21,7 +21,7 @@ class WallpaperService : Service() {
 
         startForeground(1, notification)
 
-        batteryReceiver = BatteryReceiver(this)
+        batteryReceiver = BatteryReceiver()
         registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
     }
 
@@ -56,8 +56,8 @@ class WallpaperService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Battery Wallpaper Active")
             .setContentText("Updating wallpaper based on battery status")
-            .setSmallIcon(R.drawable.twotone_battery_charging_50_24) // Replace with your actual icon
-            .setContentIntent(pendingIntent)     // 👈 Add this line
+            .setSmallIcon(R.drawable.twotone_battery_charging_50_24)
+            .setContentIntent(pendingIntent)
             .setOngoing(true)
             .build()
     }

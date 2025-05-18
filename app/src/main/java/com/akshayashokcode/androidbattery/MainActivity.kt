@@ -2,7 +2,6 @@ package com.akshayashokcode.androidbattery
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -16,10 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.akshayashokcode.androidbattery.ui.BatteryScreen
 import com.akshayashokcode.androidbattery.viewmodel.BatteryViewModel
-import com.akshayashokcode.androidbattery.viewmodel.KEY_SERVICE_RUNNING
-import com.akshayashokcode.androidbattery.viewmodel.PREFS_NAME
 import com.akshayashokcode.androidbattery.viewmodel.ServiceViewModel
-import androidx.core.content.edit
 
 class MainActivity: ComponentActivity() {
     private val batteryViewModel: BatteryViewModel by viewModels()
@@ -52,12 +48,5 @@ class MainActivity: ComponentActivity() {
                 }
             }
         }
-    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        val prefs = applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit { putBoolean(KEY_SERVICE_RUNNING, false) }
     }
 }
