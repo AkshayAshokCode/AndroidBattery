@@ -6,65 +6,65 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.BatteryManager
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.MutableState
 import androidx.core.graphics.createBitmap
 
-class BatteryReceiver(private val context: Context) : BroadcastReceiver() {
+class BatteryReceiver : BroadcastReceiver() {
     @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, intent: Intent) {
         val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-        val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-        val batteryPct = level * 100 / scale.toFloat()
-
-        val voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1) // in mV
-        val temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0 // in °C
         val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-
         val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
 
-        val wallpaperManager = WallpaperManager.getInstance(context)
-
-        val imageRes = when {
-            isCharging && level >= 90 -> R.drawable.wallpaper
-            level <= 15 -> R.drawable.wallpaper
-            else -> R.drawable.wallpaper
-        }
-        val color = when {
-            isCharging && level >= 90 -> Color.GREEN
-            level <= 15 -> Color.RED
-            else -> Color.YELLOW
-        }
-
-       // wallpaperManager.clearWallpaper()
-      //  val bitmap = BitmapFactory.decodeResource(context.resources, imageRes)
-      // wallpaperManager.setBitmap(bitmap)
-        setSolidColorWallpaper(context, color)
+        val (color, emoji) = getColorAndEmoji(level, isCharging)
+        setSolidColorWallpaperWithEmoji(context, color, emoji)
     }
 }
 
-fun setSolidColorWallpaper(context: Context, color: Int) {
+fun setSolidColorWallpaperWithEmoji(context: Context, color: Int, emoji: String) {
     val width = Resources.getSystem().displayMetrics.widthPixels
     val height = Resources.getSystem().displayMetrics.heightPixels
 
     val bitmap = createBitmap(width, height)
     val canvas = Canvas(bitmap)
-    canvas.drawColor(color) // <- Fill with your chosen color
 
+    // Fill background with color
+    canvas.drawColor(color)
+
+    // Set up paint for emoji text
+    val paint = Paint().apply {
+        textAlign = Paint.Align.CENTER
+        textSize = (width.coerceAtMost(height)) / 2f  // Adjust text size
+        isAntiAlias = true
+    }
+
+    // Draw emoji in center
+    canvas.drawText(
+        emoji,
+        width / 2f,
+        height / 2f - (paint.descent() + paint.ascent()) / 2,  // Vertically center
+        paint
+    )
+
+    // Set the wallpaper
     val wallpaperManager = WallpaperManager.getInstance(context)
     wallpaperManager.setBitmap(bitmap)
 }
 
-data class BatteryInfo(
-    val batteryPercentage: Float,
-    val voltage: Int,
-    val temperature: Double,
-    val status: String
-)
+fun getColorAndEmoji(level: Int, isCharging: Boolean): Pair<Int, String> {
+    return when (level) {
+        in 0..10 -> Pair(Color.parseColor("#8B0000"), "🪫")       // Dark Red
+        in 11..30 -> Pair(Color.RED, "🪫")
+        in 31..50 -> Pair(Color.parseColor("#FFA500"), "🔌")      // Orange
+        in 51..70 -> Pair(Color.YELLOW, "⚡")
+        in 71..90 -> Pair(Color.parseColor("#90EE90"), "🔌")      // Light Green
+        in 91..100 -> Pair(Color.GREEN, if (isCharging) "⚡✅" else "✅")
+        else -> Pair(Color.GRAY, "❓")
+    }
+}

@@ -1,28 +1,22 @@
 package com.akshayashokcode.androidbattery.viewmodel
 
 import android.app.Application
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.BatteryManager
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import com.akshayashokcode.androidbattery.WallpaperService
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 class BatteryViewModel(application: Application) : AndroidViewModel(application) {
-
-   // private val context = application.applicationContext
 
     private val _batteryPercent = MutableStateFlow(0)
     val batteryPercent: StateFlow<Int> get() = _batteryPercent
 
     private val _batteryStatusText = MutableStateFlow("Unknown ❓")
     val batteryStatusText: StateFlow<String> get() = _batteryStatusText
-
-    private var debounceJob: Job? = null
 
     private val batteryReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -38,16 +32,9 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
                 else -> "Unknown ❓"
             }
 
-            // Update UI states immediately
+            // Update UI states
             _batteryPercent.value = percent
             _batteryStatusText.value = statusText
-
-            // Debounce the service trigger
-            debounceJob?.cancel()
-            debounceJob = viewModelScope.launch {
-                delay(3000L)  // wait 3 seconds of inactivity
-                triggerWallpaperService()
-            }
         }
     }
 
@@ -57,16 +44,9 @@ class BatteryViewModel(application: Application) : AndroidViewModel(application)
         context.registerReceiver(batteryReceiver, filter)
     }
 
-    private fun triggerWallpaperService() {
-        val context = getApplication<Application>().applicationContext
-        val intent = Intent(context, WallpaperService::class.java)
-        context.startForegroundService(intent)
-    }
-
     override fun onCleared() {
         val context = getApplication<Application>().applicationContext
         super.onCleared()
         context.unregisterReceiver(batteryReceiver)
-        debounceJob?.cancel()
     }
 }
