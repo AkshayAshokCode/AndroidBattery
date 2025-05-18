@@ -16,7 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.core.graphics.createBitmap
 
-class BatteryReceiver(private val batteryInfo: MutableState<BatteryInfo>) : BroadcastReceiver() {
+class BatteryReceiver(private val context: Context) : BroadcastReceiver() {
     @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, intent: Intent) {
@@ -29,15 +29,6 @@ class BatteryReceiver(private val batteryInfo: MutableState<BatteryInfo>) : Broa
         val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
 
         val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
-        val statusText = when (status) {
-            BatteryManager.BATTERY_STATUS_CHARGING -> "Charging ⚡"
-            BatteryManager.BATTERY_STATUS_DISCHARGING -> "Discharging 🔋"
-            BatteryManager.BATTERY_STATUS_FULL -> "Full ✅"
-            BatteryManager.BATTERY_STATUS_NOT_CHARGING -> "Not Charging ⛔"
-            else -> "Unknown ❓"
-        }
-
-        batteryInfo.value = (BatteryInfo(batteryPct, voltage, temperature, statusText))
 
         val wallpaperManager = WallpaperManager.getInstance(context)
 
