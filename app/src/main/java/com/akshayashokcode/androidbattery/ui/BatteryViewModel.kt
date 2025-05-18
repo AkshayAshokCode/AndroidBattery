@@ -20,4 +20,12 @@ class BatteryViewModel : ViewModel() {
             context.registerReceiver(receiver, filter)
         }
     }
+
+    fun unregisterBatteryReceiver(context: Context) {
+        viewModelScope.launch {
+            val receiver = BatteryReceiver(batteryInfo)
+            context.unregisterReceiver(receiver)
+        }
+    }
+
 }
